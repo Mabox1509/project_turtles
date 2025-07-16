@@ -1,0 +1,1 @@
+image_blend = mouse_over ? c_gray : c_white;

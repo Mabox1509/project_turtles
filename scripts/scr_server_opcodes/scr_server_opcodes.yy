@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_server_opcodes",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_server_opcodes",
+  "parent":{
+    "name":"Neat",
+    "path":"folders/Scripts/Neat.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

@@ -1,0 +1,1 @@
+global.screen_fade = 0;

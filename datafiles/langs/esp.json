@@ -1,0 +1,38 @@
+{
+    "name" : "Español",
+
+    "title_play" : "Jugar",
+    "title_settings" : "Ajustes",
+    "title_about" : "Acerca",
+    "title_exit" : "Salir",
+
+    "header_play" : "JUGAR", 
+    
+
+    "online_create" : "Crear servidor",
+    "online_direct" : "Conexion directa",
+    "online_search" : "Buscando...",
+    "online_ip" : "Ingresa la ip del servidor:",
+    "online_port" : "Ingresa el puerto del servidor:",
+    "online_incompatible" : "Version incompatible",
+
+    "online_players" : "Jugadores: ",
+    "online_you" : "Tu",
+    "online_start" : "EMPEZAR",
+
+    "map_head" : "Nivel:",
+    "map_0" : "TestA",
+    "map_1" : "TestB",
+    "map_2" : "TestC",
+    "map_3" : "TestD",
+    "map_4" : "Random",
+    
+    "dificulty_head" : "Dificultad:",
+    "dificulty_0" : "Facil",
+    "dificulty_1" : "Normal",
+    "dificulty_2" : "Dificil",
+    "dificulty_3" : "Extremo",
+
+    "online_kick_closing" : "Servidor cerrado"
+    
+}
