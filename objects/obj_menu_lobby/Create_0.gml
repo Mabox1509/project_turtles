@@ -1,6 +1,7 @@
 //[VARIABLES]
 global.screen_fade = 1;
 obj_screen.fade = 1;
+global.neat.joinable = true;
 
 cursor_inst = instance_create_depth(0, 0, -500, obj_cursor);
 players = array_create(4, noone);
@@ -17,8 +18,13 @@ for(var _i = 0;_i < 4;_i++)
 
 players_text = scr_text("online_players");
 you_text = scr_text("online_you");
-//[FUNCTIONS]
 
+//[FUNCTIONS]
+func_start = function()
+{
+	global.neat.joinable = false;
+	neat_room_goto(rm_play);
+}
 
 //[INIT]
 global.cursor_enable = false;

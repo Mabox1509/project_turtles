@@ -1,7 +1,7 @@
 var _id = async_load[? "id"];
 var _socket = async_load[? "socket"];
 
-var msg = "";
+/*var msg = "";
 
 var keys = ds_map_keys_to_array(async_load);
 var key_count = array_length(keys);
@@ -13,7 +13,7 @@ for (var i = 0; i < key_count; ++i)
     msg += string(key) + ": " + string(val) + "\n";
 }
 
-//show_message(msg);
+show_message(msg);*/
 
 
 
@@ -26,14 +26,15 @@ switch(async_load[? "type"])
 			
 		//show_message("New client");
 		
-		clients[? _socket] = 
+		/*clients[? _socket] = 
 		{
 			outbox : [],
 			cache : array_create(32, 0),
 			
 			slot : -1,
 			avatar_id : -1,
-		};
+			loading : -1,
+		};*/
 		
 		/*neat_send2_client(0x01, [_socket, _slot], _socket); // Login
 		
@@ -54,20 +55,32 @@ switch(async_load[? "type"])
 	
 	case network_type_disconnect:
 
-	
-		if (ds_map_exists(clients, _socket))
+	if (ds_map_exists(clients, _socket))
+	{
+		if (clients[? _socket].slot > 0)
+			players_slots[clients[? _socket].slot] = false;
+
+		var _keys = ds_map_keys_to_array(global.entities);
+		var _len = array_length(_keys);
+
+		for (var i = 0; i < _len; ++i)
 		{
-			if(clients[? _socket].slot > 0)
-				players_slots[clients[? _socket].slot] = false;
-				
-			if(clients[? _socket].avatar_id > 0)
-				neat_destroy(global.entities[? clients[? _socket].avatar_id])
-			
-			ds_map_delete(clients, _socket);
-			
-			
+			var _netid = _keys[i];
+			var _ent = global.entities[? _netid];
+
+			if (_ent.owner == _socket)
+			{
+				neat_destroy(_ent);
+			}
 		}
+
+		//Delete client
+		ds_map_delete(clients, _socket);
+	}
+	
+
 	break;
+
 	
 	
 	case network_type_data:

@@ -8,7 +8,11 @@ if(global.neat.state == NetworkState.Server)
 }
 else
 {
+	draw_set_font(fnt_ps2);
 	
+	draw_set_halign(fa_right);
+	draw_text_shaded(190, 2,  "Slot:" + string(global.neat.player_index), c_gray, 1);
+	draw_set_halign(fa_left);
 }
 
 //DRAW PLAYERS

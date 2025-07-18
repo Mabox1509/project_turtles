@@ -28,11 +28,3 @@ else if(index == 7)
 	neat_stop();
 	room_goto(rm_multiplayer);
 }
-else if(index == 8)
-{
-	if(global.neat.state == NetworkState.Server)
-	{
-		neat_send2_client("room", [rm_play], -1);
-		room_goto(rm_play);
-	}
-}

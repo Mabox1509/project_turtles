@@ -24,12 +24,23 @@ global.client_opcodes[? "kick"] =
 	}
 };
 
+//Kick
+global.client_opcodes[? "alive"] = 
+{
+	parse: [], //Kick motive
+	handler: function(_args)
+	{
+		obj_client.alive_timer = 0;
+	}
+};
+
 //Accepted
 global.client_opcodes[? "accept"] = 
 {
 	parse: [buffer_s16, buffer_u8], //Session id, slot
 	handler: function(_args)
 	{
+		//show_message(_args);
 		global.neat.session_id = _args[0];
 		global.neat.player_index = _args[1];
 		
@@ -78,6 +89,23 @@ global.client_opcodes[? "status"] =
 		}
 	}
 };
+	
+//Load room
+global.client_opcodes[? "room"] = 
+{
+	parse: [buffer_u32], //Room
+	handler: function(_args)
+	{
+		global.screen_fade = 1;
+		global.cursor_enable = false;
+		
+		obj_client.neat_room = _args[0];
+		obj_client.alarm[0] = 30;
+		//room_loaded
+		
+	}
+};
+
 
 //Spawn entity
 global.client_opcodes[? "entity_spawn"] = 
@@ -85,6 +113,12 @@ global.client_opcodes[? "entity_spawn"] =
 	parse: [buffer_s16, buffer_s16, buffer_u32, buffer_u32, buffer_u32], // x, y, type, id, owner
 	handler: function(_args)
 	{
+		if(global.neat.session_id < 0)
+		return;
+		
+		if(room != rm_play)
+			return;
+		
 		var _inst = instance_create_depth(_args[0], _args[1], 0, _args[2]);
 		_inst.func_setid(_args[3]);
 		_inst.owner = _args[4];
@@ -115,7 +149,16 @@ global.client_opcodes[? "entity_sync"] =
 	], //id, x, y, xvel, yvel, sprite, frame, rot
 	handler: function(_args)
 	{
+		if(global.neat.session_id < 0)
+		return;
+		
+		if(room != rm_play)
+			return;
+		
 		var _inst = global.entities[? _args[0]];
+		
+		if(_inst == undefined || !instance_exists(_inst))
+			return;
 		
 		//show_message(_inst);
 		if(_inst.owner == global.neat.session_id)
@@ -140,6 +183,9 @@ global.client_opcodes[? "entity_despawn"] =
 	parse: [buffer_u32], // x, y, type, id, owner
 	handler: function(_args)
 	{
+		if(room != rm_play)
+			return;
+		
 		var _inst = global.entities[? _args[0]];
 		instance_destroy(_inst);
 		

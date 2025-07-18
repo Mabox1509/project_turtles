@@ -58,6 +58,7 @@
     {"id":{"name":"obj_cursor","path":"objects/obj_cursor/obj_cursor.yy",},},
     {"id":{"name":"obj_enemy","path":"objects/obj_enemy/obj_enemy.yy",},},
     {"id":{"name":"obj_entity","path":"objects/obj_entity/obj_entity.yy",},},
+    {"id":{"name":"obj_gameplay","path":"objects/obj_gameplay/obj_gameplay.yy",},},
     {"id":{"name":"obj_menu_lobby","path":"objects/obj_menu_lobby/obj_menu_lobby.yy",},},
     {"id":{"name":"obj_menu_multiplayer","path":"objects/obj_menu_multiplayer/obj_menu_multiplayer.yy",},},
     {"id":{"name":"obj_menu_title","path":"objects/obj_menu_title/obj_menu_title.yy",},},

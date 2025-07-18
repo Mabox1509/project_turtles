@@ -89,13 +89,20 @@ on_click = function()
 	global.cursor_enable = false;
 	
 	
-	if(index != 6)
+	if(index == 6)
 	{
-		global.screen_fade = 1;
-		alarm[0] = 30;
+		inst_44D2F1EF.func_direct();
+	}
+	else if(index == 8)
+	{
+		if(global.neat.state == NetworkState.Server)
+		{
+			obj_menu_lobby.func_start();
+		}
 	}
 	else
 	{
-		inst_44D2F1EF.func_direct();
+		global.screen_fade = 1;
+		alarm[0] = 30;
 	}
 }

@@ -5,6 +5,8 @@ players_slots[0] = true;
 
 broadcast_socket = network_create_socket(network_socket_udp);
 server_motd = "Hola mundo";
+
+neat_room = -1;
 //show_message(broadcast_socket);
 
 //[ALARM]

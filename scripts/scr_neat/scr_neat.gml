@@ -33,6 +33,7 @@ global.skin_colors =
 	#b07972,
 	#7f9bb0
 ];
+global.clients_room_sync = false;
 //global.chat = [];
 
 
@@ -43,23 +44,21 @@ function neat_stop()
 	if(global.neat.state == NetworkState.Noone)
 		return;
 		
-	if(global.neat.state == NetworkState.Server)
-	{
-		neat_send2_client("kick", ["closing"], -1);
-	}
+
 	
 	//Destroy socket
-	if(instance_exists(global.neat.instance))
-		global.neat.instance.alarm[5] = 5;
-	
+	instance_destroy(global.neat.instance);
+	network_destroy(global.neat.socket);
 	
 	//Reset all
 	global.neat.state = NetworkState.Noone;
+	global.neat.socket = -1;
 	global.neat.ip = "";
 	global.neat.port = -1;
 	global.neat.session_id = -1;
 	global.neat.player_index = -1;
 	global.neat.joinable = false;
+	
 	//ds_map_clear(global.neat.cache);
 	
 	show_debug_message("Neat stopped");
@@ -96,7 +95,7 @@ function neat_server()
 	//CREATE INSTANCE	
 	global.neat.state = NetworkState.Server;
 	global.neat.instance = instance_create_depth(0, 0, 0 ,obj_server);
-	global.neat.session_id = 0;
+	global.neat.session_id = global.neat.socket;
 	global.neat.player_index = 0;
 	global.neat.joinable = true;
 	//global.chat = [];
@@ -183,10 +182,61 @@ function neat_make_message(_opcode, _args, _server)
         args: _final_args
     };
 }
+function neat_serialize(_list)
+{
+	var _table = global.neat.state == NetworkState.Server ? global.client_opcodes : global.server_opcodes;	
+	
+	var _buffer = buffer_create(1024, buffer_grow, 1);
+	buffer_seek(_buffer, buffer_seek_start, 0);
+	buffer_write(_buffer, buffer_u32, array_length(_list));
 
+	for (var _j = 0; _j < array_length(_list); _j++)
+	{
+		var _msg = _list[_j];
+		var _opcode = _msg.opcode;
+		var _args = _msg.args;
+
+		buffer_write(_buffer, buffer_string, _opcode);
+
+		var _entry = _table[? _opcode];
+		var _types = _entry.parse;
+
+		for (var _k = 0; _k < array_length(_args); _k++)
+		{
+			var _type = _types[_k];
+			var _arg = _args[_k];
+
+			if (_type == -1)
+			{
+				var _size = buffer_get_size(_arg);
+				buffer_write(_buffer, buffer_u32, _size);
+
+				for (var _b = 0; _b < _size; _b++)
+				{
+					var _byte = buffer_peek(_arg, _b, buffer_u8);
+					buffer_write(_buffer, buffer_u8, _byte);
+				}
+
+				buffer_delete(_arg);
+			}
+			else
+			{
+				buffer_write(_buffer, _type, _arg);
+			}
+		}
+	}
+
+	var _compress = buffer_compress(_buffer, 0, buffer_get_size(_buffer));
+	buffer_delete(_buffer);
+	
+	return _compress;
+}
 
 function neat_send2_client(_opcode, _args, _target)
 {
+	if(global.neat.state == NetworkState.Noone)
+		return;
+	
 	if(global.neat.state != NetworkState.Server)
 		throw "This is a server-side function.";
 		
@@ -213,17 +263,32 @@ function neat_send2_client(_opcode, _args, _target)
 	}
 	else
 	{
-		if (!ds_map_exists(obj_server.clients, _target))
-		        throw "Target client not found: " + string(_target);
-
-		    array_push(
+		if (ds_map_exists(obj_server.clients, _target))
+		{
+			array_push(
 		        obj_server.clients[? _target].outbox,
 		        neat_make_message(_opcode, _args, true)
 		    );
+		}
+		else
+		{
+			_list = [];
+			array_push(_list, neat_make_message(_opcode, _args, true));
+			
+			var _buffer = neat_serialize(_list);
+			network_send_packet(_target, _buffer, buffer_get_size(_buffer));
+			
+			buffer_delete(_buffer);
+		}
+
+		    
 	}
 }
 function neat_send2_server(_opcode, _args)
 {
+	if(global.neat.state == NetworkState.Noone)
+		return;
+	
     if (global.neat.state != NetworkState.Client)
         throw "This is a client-side function.";
 
@@ -322,7 +387,7 @@ function neat_spawn(_x, _y, _type, _owner)
 	
 			_inst.func_setid(-1);
 	
-			neat_send2_client(0x02, [_inst.x, _inst.y, _inst.object_index, _inst.net_id, _inst.owner], -1);
+			neat_send2_client("entity_spawn", [_inst.x, _inst.y, _inst.object_index, _inst.net_id, _inst.owner], -1);
 			return _inst;
 		break;
 		
@@ -344,9 +409,47 @@ function neat_destroy(_inst)
 
 	
 	
-	neat_send2_client(0x06, [_inst.net_id],-1);
+	neat_send2_client("entity_despawn", [_inst.net_id],-1);
 	instance_destroy(_inst);
 	
 	/**/
 }
+
+function neat_room_goto(_room)
+{
+	if (global.neat.state != NetworkState.Server)
+		throw "A client can't call a goto function";
+
+	global.screen_fade = 1;
+	global.cursor_enable = false;
+	
+	// Iterar sobre todos los clientes y asignar loading
+	var _keys = ds_map_keys_to_array(obj_server.clients);
+	var _count = array_length(_keys);
+
+	if(_count > 0)
+	{
+		global.clients_room_sync = false;
+		for (var i = 0; i < _count; ++i)
+		{
+			var _key = _keys[i];
+			var _client = obj_server.clients[? _key];
+
+			if (is_undefined(_client)) continue;
+
+			_client.loading = _room;
+		}
+		neat_send2_client("room", [_room], -1);
+	}
+	else
+	{
+		global.clients_room_sync = true;
+	}
+
+	obj_server.neat_room = _room;
+	obj_server.alarm[1] = 30;
+	
+	
+}
+
 //[NETWORK ACTIONS]

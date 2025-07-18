@@ -1,0 +1,1 @@
+draw_text_shaded(2, 2, alive_timer);

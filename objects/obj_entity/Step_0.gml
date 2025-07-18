@@ -78,12 +78,12 @@ if(global.neat.state != NetworkState.Noone)
 		if (global.neat.state == NetworkState.Server)
 		{
 			// El servidor siempre puede sincronizar
-			neat_send2_client(0x03, _packet, -1);
+			neat_send2_client("entity_sync", _packet, -1);
 		}
 		else if (func_isowner())
 		{
 			// El cliente solo puede sincronizar si es dueño
-			neat_send2_server(0x03, _packet);
+			neat_send2_server("entity_sync", _packet);
 		}
 	}
 }
