@@ -25,8 +25,9 @@ if(_count > 0)
 
 	        if (_hit != noone)
 	        {
+			 _hit.on_over(x - _rect.x, y - _rect.y);
 		            _hit.mouse_over = true;
-			    _hit.on_over(x - _rect.x, y - _rect.y);
+			   
 		
 		            if (mouse_check_button_pressed(mb_left))
 		            {

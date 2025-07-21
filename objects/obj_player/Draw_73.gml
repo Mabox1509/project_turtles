@@ -1,5 +1,5 @@
 // Inherit the parent event
-//event_inherited();
+event_inherited();
 
 
 if(func_isowner())
@@ -11,7 +11,7 @@ if(func_isowner())
 
 	for(var _i = 1;_i <_points;_i++)
 	{
-		var _lerp = _i / _points;
+		var _lerp = (_i / _points);
 		
 		var _xp = floor(lerp(x, cursor.x , _lerp));
 		var _yp = floor(lerp(y, cursor.y , _lerp));

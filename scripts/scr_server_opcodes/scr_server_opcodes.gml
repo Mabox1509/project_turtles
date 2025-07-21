@@ -32,7 +32,6 @@ global.server_opcodes[? "validate"] =
 			
 				slot : -1,
 				avatar_id : -1,
-				loading : -1,
 			};
 		
 			
@@ -87,46 +86,13 @@ global.server_opcodes[? "pong"] =
 	}
 };
 
-//Room Loaded
-global.server_opcodes[? "room_loaded"] = 
+//Alive
+global.server_opcodes[? "generated"] = 
 {
-	parse: [buffer_u32], // Room
+	parse: [],
 	handler: function(_socket, _args)
 	{
-		var _expected_room = obj_server.clients[? _socket].loading;
-
-		if (_args[0] != _expected_room)
-		{
-			neat_send2_client("kick", ["room"], _socket);
-		}
-		else
-		{
-			obj_server.clients[? _socket].loading = -1;
-
-			// Verificar si TODOS los clientes han terminado de cargar
-			var _all_loaded = true;
-			var _keys = ds_map_keys_to_array(obj_server.clients);
-			var _count = array_length(_keys);
-
-			for (var i = 0; i < _count; ++i)
-			{
-				var _key = _keys[i];
-				var _client = obj_server.clients[? _key];
-
-				if (is_undefined(_client)) continue;
-
-				if (_client.loading != -1)
-				{
-					_all_loaded = false;
-					break;
-				}
-			}
-
-			if (_all_loaded)
-			{
-				global.clients_room_sync = true;
-			}
-		}
+		obj_server.clients[? _socket].cache[10] = true; //SET LOADED FLAG AS TRUE
 	}
 };
 
@@ -148,7 +114,9 @@ global.server_opcodes[? "entity_sync"] =
 		buffer_f32,  //frame
 		
 		buffer_s16,  //rot
-		buffer_u32  //color
+		buffer_u32 , //color
+		
+		buffer_bool, //Dying
 		
 	], //id, x, y, xvel, yvel, sprite, frame, rot
 	handler: function(_socket ,_args)
@@ -174,7 +142,8 @@ global.server_opcodes[? "entity_sync"] =
 		_inst.image_index = _args[6];
 		
 		_inst.visual_angle = _args[7];
-		
 		_inst.image_blend = _args[8];
+		
+		_inst.dying = _args[9];
 	}
 };

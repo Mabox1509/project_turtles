@@ -13,8 +13,8 @@ if(abs(_xinn) +  abs(_yinn) > 1)
 	_yinn /= norm;
 }
 
-vel_x = scr_math_towards(vel_x, _xinn * spd,  spd * accel * _dt);
-vel_y = scr_math_towards(vel_y, _yinn * spd,  spd * accel * _dt);
+vel_x = scr_math_towards(vel_x, _xinn * spd,  spd * frict * _dt);
+vel_y = scr_math_towards(vel_y, _yinn * spd,  spd * frict * _dt);
 
 
 

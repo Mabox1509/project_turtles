@@ -9,3 +9,4 @@ global.cursor_enable = false;
 //[INIT]
 alarm[0] = 10;
 
+window_set_caption(GAME_NAME);

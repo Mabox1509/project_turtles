@@ -4,8 +4,8 @@ event_inherited();
 //[PLAYER]
 norm = sqrt(2);
 
-spd = 92;
-accel = 1.25;
+spd = 128;
+inerpol_respawn = false;
 
 cursor = 
 {
@@ -14,4 +14,5 @@ cursor =
 };
 
 
+global.screen_fade = 0;
 

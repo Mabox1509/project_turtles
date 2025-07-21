@@ -60,20 +60,24 @@ switch(async_load[? "type"])
 		if (clients[? _socket].slot > 0)
 			players_slots[clients[? _socket].slot] = false;
 
-		var _keys = ds_map_keys_to_array(global.entities);
-		var _len = array_length(_keys);
-
-		for (var i = 0; i < _len; ++i)
+		if(variable_global_exists("entities"))
 		{
-			var _netid = _keys[i];
-			var _ent = global.entities[? _netid];
+			var _keys = ds_map_keys_to_array(global.entities);
+			var _len = array_length(_keys);
 
-			if (_ent.owner == _socket)
+			for (var i = 0; i < _len; ++i)
 			{
-				neat_destroy(_ent);
-			}
-		}
+				var _netid = _keys[i];
+				var _ent = global.entities[? _netid];
 
+				if (_ent.owner == _socket)
+				{
+					neat_destroy(_ent);
+				}
+			}
+
+		}
+		
 		//Delete client
 		ds_map_delete(clients, _socket);
 	}

@@ -1,4 +1,6 @@
-/*draw_set_color(c_green);
+draw_set_color(c_green);
 draw_set_alpha(0.5);
 
-draw_rectangle(bbox_left, bbox_top, bbox_right-1, bbox_bottom-1, false);*/
+
+var _bbox = func_getbbox(x, y);
+//draw_rectangle(_bbox[0], _bbox[1], _bbox[2]-1, _bbox[3]-1, false);

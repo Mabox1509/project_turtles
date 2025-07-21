@@ -32,6 +32,3 @@ function scr_text(_key)
 	return global.texts[? _key];
 }
 
-
-//[INITIALIZE]
-load_language("esp");

@@ -33,7 +33,6 @@ global.skin_colors =
 	#b07972,
 	#7f9bb0
 ];
-global.clients_room_sync = false;
 //global.chat = [];
 
 
@@ -423,29 +422,8 @@ function neat_room_goto(_room)
 	global.screen_fade = 1;
 	global.cursor_enable = false;
 	
-	// Iterar sobre todos los clientes y asignar loading
-	var _keys = ds_map_keys_to_array(obj_server.clients);
-	var _count = array_length(_keys);
-
-	if(_count > 0)
-	{
-		global.clients_room_sync = false;
-		for (var i = 0; i < _count; ++i)
-		{
-			var _key = _keys[i];
-			var _client = obj_server.clients[? _key];
-
-			if (is_undefined(_client)) continue;
-
-			_client.loading = _room;
-		}
-		neat_send2_client("room", [_room], -1);
-	}
-	else
-	{
-		global.clients_room_sync = true;
-	}
-
+	neat_send2_client("room", [_room], -1);
+	
 	obj_server.neat_room = _room;
 	obj_server.alarm[1] = 30;
 	

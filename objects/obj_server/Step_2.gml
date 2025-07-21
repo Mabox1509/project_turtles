@@ -14,6 +14,8 @@ for (var _i = 0; _i < array_length(_clients); _i++)
 		var _buffer = neat_serialize(_client.outbox);
 		
 		network_send_packet(_id, _buffer, buffer_get_size(_buffer));
+		
+		//show_debug_message("Sending " + string(buffer_get_size(_buffer)) + " to " + string(_id));
 		buffer_delete(_buffer);
 
 		_client.outbox = [];

@@ -32,6 +32,12 @@ if(global.neat.state == NetworkState.Server)
 {
 	alarm[1] = 1;
 	alarm[2] = 60;
+	
+	window_set_caption(GAME_NAME + " (server)");
+}
+else
+{
+	window_set_caption(GAME_NAME + " (client - " + global.neat.ip + ":" + string(global.neat.port) + ")");
 }
 
 

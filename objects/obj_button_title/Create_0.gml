@@ -86,6 +86,7 @@ image_alpha = 0;
 
 on_click = function()
 {
+	obj_sounder.func_play_sfx(sfx_test);
 	global.cursor_enable = false;
 	
 	
@@ -105,4 +106,8 @@ on_click = function()
 		global.screen_fade = 1;
 		alarm[0] = 30;
 	}
+}
+on_over = function(_x, _y)
+{
+
 }

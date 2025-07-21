@@ -1,1 +1,1 @@
-camera_set_view_pos(cam, x, y);
+camera_set_view_pos(cam, floor(x), floor(y));

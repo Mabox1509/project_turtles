@@ -106,6 +106,23 @@ global.client_opcodes[? "room"] =
 	}
 };
 
+//Generation
+global.client_opcodes[? "generation"] = 
+{
+	parse: [-1], //Room
+	handler: function(_args)
+	{
+		if(room == rm_play)
+		{
+			obj_gameplay.map_buffer = _args[0];
+			obj_gameplay.func_gentiles();
+			
+			neat_send2_server("generated", []);
+		}
+		
+	}
+};
+
 
 //Spawn entity
 global.client_opcodes[? "entity_spawn"] = 
@@ -144,7 +161,9 @@ global.client_opcodes[? "entity_sync"] =
 		buffer_f32,  //frame
 		
 		buffer_s16,  //rot
-		buffer_u32  //color
+		buffer_u32,  //color
+		
+		buffer_bool //Dying
 		
 	], //id, x, y, xvel, yvel, sprite, frame, rot
 	handler: function(_args)
@@ -175,6 +194,8 @@ global.client_opcodes[? "entity_sync"] =
 		
 		_inst.visual_angle = _args[7];
 		_inst.image_blend = _args[8];
+		
+		_inst.dying = _args[9];
 	}
 };
 //Despawn entity

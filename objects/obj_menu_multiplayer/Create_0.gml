@@ -42,7 +42,7 @@ func_connect = function()
 
 //[INIT]
 global.cursor_enable = false;
-
+window_set_caption(GAME_NAME + " (multiplayer)");
 
 //[ALARM]
 alarm[0] = 10;

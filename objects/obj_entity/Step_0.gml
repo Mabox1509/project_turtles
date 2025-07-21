@@ -1,7 +1,58 @@
 //[UPDATE ENTITY]
 var _dt = delta_time / 1000000;
-if(func_isowner())
-	event_user(0);
+depth = 0;
+
+if(!dying)
+{
+	image_xscale = 1;
+	image_yscale = 1;
+	
+	shadow_inst.visible = true;
+	
+	if(func_isowner())
+	{
+		var _floor = func_placemetting(x, y, TileCollision.Floor);
+		if(_floor != noone)
+		{
+			_floor.on_collide(id);
+			frict = _floor.frict;
+			event_user(0);
+		}
+		else
+		{
+			dying = true;
+		}
+		
+		
+	}
+
+}
+else
+{
+	depth = image_xscale < 0.5 ? 150 : 100;
+
+	image_xscale -= 0.85 * _dt;
+	image_yscale -= 0.85 * _dt;
+	
+	image_xscale = max(image_xscale, 0);
+	image_yscale = max(image_yscale, 0);
+	
+	shadow_inst.visible = false;
+	
+	if(func_isowner())
+	{
+		vel_x = scr_math_smooth(vel_x, 0, 0.25);
+		vel_y = scr_math_smooth(vel_y, 0, 0.25);
+		
+		if(image_xscale <= 0)
+		{
+			x = xstart;
+			y = ystart;
+			dying = false;
+		}
+	}
+
+}
 
 
 
@@ -19,7 +70,7 @@ if(abs(sub_x) >= 1)
 	for(var _i = 1;_i <= _abs;_i++)
 	{
 		var _x = x + (_i * sign(_mov));
-		if(place_meeting(_x, y, obj_collision))
+		if(func_placemetting(_x, y, TileCollision.Solid) != noone)
 		{
 			vel_x = 0;
 			sub_x = 0;
@@ -45,7 +96,7 @@ if (abs(sub_y) >= 1)
 	for (var _i = 1; _i <= _abs; _i++)
 	{
 		var _y = y + (_i * sign(_mov));
-		if (place_meeting(x, _y, obj_collision))
+		if(func_placemetting(x, _y, TileCollision.Solid) != noone)
 		{
 			vel_y = 0;
 			sub_y = 0;
@@ -73,7 +124,7 @@ if(global.neat.state != NetworkState.Noone)
 	{
 		sync_timer += SYNC_RATE;
 
-		var _packet = [net_id, x, y, vel_x, vel_y, sprite_index, image_index, visual_angle, image_blend];
+		var _packet = [net_id, x, y, vel_x, vel_y, sprite_index, image_index, visual_angle, image_blend, dying];
 
 		if (global.neat.state == NetworkState.Server)
 		{
